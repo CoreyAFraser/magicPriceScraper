@@ -1,0 +1,25 @@
+{
+  "name": "magic-web-scraper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon ./bin/startup",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Corey Fraser",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "latest",
+    "express": "latest",
+    "request": "latest",
+    "async": "latest",
+    "body": "latest",
+    "body-parser": "latest",
+    "compression": "latest",
+    "ejs": "latest",
+    "morgan": "latest",
+    "node-rest-client": "latest",
+    "mongodb":"latest"
+  }
+}
