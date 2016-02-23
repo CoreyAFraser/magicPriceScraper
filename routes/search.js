@@ -33,7 +33,7 @@ errDomain.run(function(){
 	function searchDB(req, res) {
 		MongoClient.connect(globalConfig.mongoDb.url, function(err, db) {
 		 	assert.equal(null, err);
-		  	console.log("Connected correctly to server");
+		  	console.log("Connected correctly to server to search");
 
 		  	var collection = db.collection(globalConfig.mongoDb.name);
 		  	collection.find({ cardName : req.query.cardName }).toArray(function(err, docs) {
@@ -45,10 +45,12 @@ errDomain.run(function(){
 	router.get('/search', function(req, res){
 		var currentTime = new Date().getTime();
 		var lastScrapeTime = scraper.getLastScrapeTime();
-		console.log(lastScrapeTime);
+		console.log("*** Last Scrape Time *** " + lastScrapeTime);
 		if(lastScrapeTime == "UnSet" || ((currentTime - lastScrapeTime) > (1000 * 60 * 60 * 24))) {
-			scraper.scrape(searchDB(req, res));
+			console.log("Scraping then searching");
+			scraper.scrape(searchDB, req, res);
 		} else {
+			console.log("Searching");
 			searchDB(req, res);
 		}
 	});

@@ -6,7 +6,7 @@ module.exports = {
 	clearDb: function(res) {
 		MongoClient.connect(globalConfig.mongoDb.url, function(err, db) {
 			assert.equal(null, err);
-			console.log("Connected correctly to server");
+			console.log("Connected correctly to server to Clear DB");
 			var collection = db.collection(globalConfig.mongoDb.name);
 			collection.removeMany({}, 
 				function(err, result) {

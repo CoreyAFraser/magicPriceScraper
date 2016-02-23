@@ -1,5 +1,8 @@
+var object = require('../util/object');
+
 module.exports = {
-	parse: function(html, cardsJson) {
+	parse: function(html) {
+		var cardsJson = [];
 		var cards = [];
 	    cards = html.split('\n');
 			           
@@ -11,9 +14,8 @@ module.exports = {
 		for(var i = 0; i < cards.length-1; i++) {
 			card = cards[i];
 			var cardName = "";
-			var cardJson = {cardName : "",
-							prices : []};
-			var price = { price : "", quanity : "", foil : "", site: "", set : ""};
+			var cardJson = new object.card();
+			var price = new object.price();
 
 			var attributes = card.split('\t');
 			if(attributes.length > 0) {
@@ -23,11 +25,11 @@ module.exports = {
 			    if(attributes.length == 4) {
 			        price.foil = "";
 			        price.quanity = attributes[2].trim();
-			        price.price = attributes[3].trim();
+			        price.mintPrice = attributes[3].trim();
 			    } else {
 					price.foil = attributes[2].trim();
 			        price.quanity = attributes[3].trim();
-			        price.price = attributes[4].trim();
+			        price.mintPrice = attributes[4].trim();
 			    }
 
 			    if(!cardsIndex[cardName]) {

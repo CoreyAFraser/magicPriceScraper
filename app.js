@@ -45,6 +45,10 @@ errDomain.run(function(){
 		dbHelper.clearDb(res);
 	});
 
+	app.get('/scrape', function(req, res){
+		scraper.scrape(null, req, res);
+	});
+
 	app.use(parallel([
 		logger('combined'),
 		compress(),
