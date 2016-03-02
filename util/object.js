@@ -11,7 +11,6 @@ function setSet(set) {
 	var newSet = set;
 	newSet = newSet.replace(",","").replace(/ +/g, " ").replace("Singles", "").replace("Foil","").
 					trim().toLowerCase();
-
 	this.set = newSet;
 }
 
@@ -29,6 +28,6 @@ module.exports = {
 		this.foil = "";
 		this.site = "";
 		this.set = "";
-		this.setSet = setSet
+		this.setSet = setSet;
 	}
 };
