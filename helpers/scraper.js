@@ -65,7 +65,7 @@ module.exports = {
 				})
 		  	}
 	  	],
-	  	function(error, results) {
+	  	function(error, results, next) {
 	  		if(error) return next(error);
 	  		var cardsJson = [];
 	  		cardsJson = mergeResults(results);
