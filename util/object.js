@@ -1,11 +1,17 @@
 function setName(name) {
 	var newName = name;
-	newName = newName.replace("-","").replace("Foil","").replace("FOIL","").trim().toLowerCase()
+	newName = newName.split("(")[0];
+	newName = newName.replace("-","").replace("Foil","")
+		.replace("FOIL","").replace(/ +/g, " ").trim().toLowerCase();
+
 	this.cardName = newName;
 }
 
 function setSet(set) {
 	var newSet = set;
+	newSet = newSet.replace(",","").replace(/ +/g, " ").replace("Singles", "").replace("Foil","").
+					trim().toLowerCase();
+
 	this.set = newSet;
 }
 

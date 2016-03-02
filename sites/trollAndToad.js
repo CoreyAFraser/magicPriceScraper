@@ -24,7 +24,7 @@ module.exports = {
 			beginIndex = card.indexOf("<strong>");
 			beginIndex = card.indexOf(">",beginIndex)+1;
 			endIndex = card.indexOf("<",beginIndex);
-			price.set = card.substring(beginIndex,endIndex).replace("Singles", "").replace("Foil","").trim();
+			price.setSet(card.substring(beginIndex,endIndex));
 				
 			beginIndex = card.indexOf("<a",beginIndex);
 			beginIndex = card.indexOf(">",beginIndex)+1;
@@ -54,7 +54,7 @@ module.exports = {
 			endIndex = card.indexOf("<",beginIndex);
 			price.quantity = card.substring(beginIndex,endIndex).trim();			
 
-			if(!cardsIndex[cardName]) {
+			if(typeof cardsIndex[cardName] == 'undefined') {
 		    	cardsIndex[cardName] = index;
 		    	cardJson.prices[0] = price;
 		    	cardsJson[index] = cardJson;

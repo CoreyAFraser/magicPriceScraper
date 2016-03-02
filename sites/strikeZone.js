@@ -7,7 +7,7 @@ module.exports = {
 	    cards = html.split('\n');
 			           
 		var site = "SZ";
-	    var index = cardsJson.length;
+	    var index = 0;
 	    var card;
 	    var cardsIndex = [];
 
@@ -20,8 +20,9 @@ module.exports = {
 			var attributes = card.split('\t');
 			if(attributes.length > 0) {
 			    price.site = site;
-			    price.set = attributes[0].trim();
-			    cardJson.cardName = cardName = attributes[1].trim();
+			    price.setSet(attributes[0].trim());
+			    cardJson.setName(attributes[1].trim());
+			    cardName = cardJson.cardName;
 			    if(attributes.length == 4) {
 			        price.foil = "";
 			        price.quanity = attributes[2].trim();
@@ -32,7 +33,7 @@ module.exports = {
 			        price.mintPrice = attributes[4].trim();
 			    }
 
-			    if(!cardsIndex[cardName]) {
+			    if(typeof cardsIndex[cardName] == 'undefined') {
 			    	cardsIndex[cardName] = index;
 			    	cardJson.prices[0] = price;
 			    	cardsJson[index] = cardJson;

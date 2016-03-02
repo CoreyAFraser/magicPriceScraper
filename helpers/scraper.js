@@ -91,5 +91,8 @@ module.exports = {
 	},
 	getLastScrapeTime: function() {
 		return lastScrapeTime;
+	},
+	resetLastScrapeTime: function() {
+		lastScrapeTime = "UnSet";
 	}
 };

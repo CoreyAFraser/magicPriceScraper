@@ -1,6 +1,7 @@
 var MongoClient  = require('mongodb').MongoClient;
 var assert 		 = require('assert');
 var globalConfig = require('../configs/globalConfig.json');
+var scraper      = require('../helpers/scraper');
 
 module.exports = {
 	clearDb: function(res) {
@@ -15,6 +16,7 @@ module.exports = {
 						res.send("Cleared DB");
 					}
 				    db.close();
+				    scraper.resetLastScrapeTime();
 			});
 		});
 	}

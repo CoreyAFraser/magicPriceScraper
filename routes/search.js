@@ -36,9 +36,16 @@ errDomain.run(function(){
 		  	console.log("Connected correctly to server to search");
 
 		  	var collection = db.collection(globalConfig.mongoDb.name);
-		  	collection.find({ cardName : req.query.cardName }).toArray(function(err, docs) {
-    			if(!res.headersSent) { res.send(docs); };
-  			}); 
+
+			collection.find({ cardName : req.query.cardName }).toArray(function(err, docs) {
+				if(docs.length == 0) {
+			  		collection.find({ cardName : new RegExp(req.query.cardName, "i") }).toArray(function(err, docs) {
+	    				if(!res.headersSent) { res.send(docs); };
+	  				});
+		  		} else {
+					if(!res.headersSent) { res.send(docs); };
+		  		}
+		  	});
 		});
 	};
 
@@ -54,5 +61,6 @@ errDomain.run(function(){
 			searchDB(req, res);
 		}
 	});
+	
 	module.exports = router;
 });
