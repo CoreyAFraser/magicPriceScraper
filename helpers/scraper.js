@@ -7,6 +7,7 @@ var globalConfig = require('../configs/globalConfig.json');
 //=========================================Require Sites
 var strikeZone = require('../sites/strikeZone');
 var trollAndToad = require('../sites/trollAndToad');
+var abuGames = require('../sites/ABUGames');
 //=========================================Require Sites
 
 var lastScrapeTime = "UnSet";
@@ -17,22 +18,24 @@ function mergeResults(results) {
 	var index = 0;
 	for(var i = 0;i < results.length; i++) {
 		var result = results[i]
-		for(var j = 0;j < result.length; j++) {
-			var name = result[j].cardName;
-			if(!cardsIndex[name]) {
-				cardsIndex[name] = index;
-				cardsJson[index] = result[j];
-			} else {
-				var cardJson = cardsJson[cardsIndex[name]];
-				var ind = cardJson.prices.length;
-				for(var k = 0; k < result[j].prices.length; k++) {
-					cardJson.prices[ind + k] = result[j].prices[k];
+		if(result != null) {
+			for(var j = 0;j < result.length; j++) {
+				var name = result[j].cardName;
+				if(!cardsIndex[name]) {
+					cardsIndex[name] = index;
+					cardsJson[index] = result[j];
+				} else {
+					var cardJson = cardsJson[cardsIndex[name]];
+					var ind = cardJson.prices.length;
+					for(var k = 0; k < result[j].prices.length; k++) {
+						cardJson.prices[ind + k] = result[j].prices[k];
+					}
+
+					cardsJson[cardsIndex[name]] = cardJson;
 				}
 
-				cardsJson[cardsIndex[name]] = cardJson;
+				index = cardsJson.length;
 			}
-
-			index = cardsJson.length;
 		}
 	}
 	return cardsJson;
@@ -63,7 +66,29 @@ module.exports = {
 					console.log("    Troll And Toad Ends");
 					callback(null, results);
 				})
-		  	}
+		  	}/*,
+		  	function(callback) {
+		  		console.log("        ABU Begins");
+		  		urls = abuGames.urls();
+		  		i = 0;
+		  		currentLink = "";
+		  		while(i < urls.length) {
+		  			if(currentLink != urls[i]) {
+		  				currentLink = urls[i];
+		  				console.log(currentLink);
+						request(urls[i], function(error, response, html){
+							if(error) callback(error, response);
+
+							urls = abuGames.parse(html);
+							console.log("        ABU Page " + (i+1) + " " + urls[i] + " ends " + urls.length);
+							callback(null, null);
+							i++;
+						});
+					} else {
+						setTimeout(function() {}, 200)
+					}
+				}
+		  	}*/
 	  	],
 	  	function(error, results, next) {
 	  		if(error) return next(error);
