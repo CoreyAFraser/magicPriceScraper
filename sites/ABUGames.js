@@ -1,5 +1,4 @@
 var object = require('../util/object');
-var phantom = require('phantom');
 var baseUrl = 'http://www.abugames.com/buylist.html';
 var urls = [];
 urls.push(baseUrl);

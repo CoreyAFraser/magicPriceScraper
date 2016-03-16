@@ -2,9 +2,9 @@ function setName(name) {
 	var newName = name;
 	newName = newName.split("(")[0];
 	newName = newName.replace("-","").replace("Foil","")
-		.replace("FOIL","").replace(/ +/g, " ").trim().toLowerCase();
+		.replace("FOIL","").replace("- dvd", "").replace(/ +/g, " ").trim().toLowerCase();
 
-	this.cardName = newName;
+	this._id = newName;
 }
 
 function setSet(set) {
@@ -16,7 +16,7 @@ function setSet(set) {
 
 module.exports = {
 	card: function() {
-		this.cardName = "";
+		this._id = "";
 		this.prices = [];
 		this.setName = setName;
 

@@ -88,6 +88,10 @@ module.exports = {
 						setTimeout(function() {}, 200)
 					}
 				}
+
+				insert card as read, have dB helper query, merge and update the dB for each entry
+
+
 		  	}*/
 	  	],
 	  	function(error, results, next) {
