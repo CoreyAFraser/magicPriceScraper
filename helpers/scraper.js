@@ -3,14 +3,14 @@ var async	     = require('async');
 var MongoClient  = require('mongodb').MongoClient;
 var assert 		 = require('assert');
 var globalConfig = require('../configs/globalConfig.json');
+var object 		 = require('../util/object');
+var dbHelper     = require('../helpers/dBHelper');
 
 //=========================================Require Sites
 var strikeZone = require('../sites/strikeZone');
 var trollAndToad = require('../sites/trollAndToad');
 var abuGames = require('../sites/ABUGames');
 //=========================================Require Sites
-
-var lastScrapeTime = "UnSet";
 
 function mergeResults(results) {
 	var cardsJson = [];
@@ -98,6 +98,23 @@ module.exports = {
 	  		if(error) return next(error);
 	  		var cardsJson = [];
 	  		cardsJson = mergeResults(results);
+
+			MongoClient.connect(globalConfig.mongoDb.url, function(err, db) {
+			 	assert.equal(null, err);
+			  	console.log("Connected correctly to server to write to DB");
+			 	var collection = db.collection(globalConfig.mongoDb.name);
+
+			 	currentTime = new Date().getTime();
+
+				collection.insert(
+				    { _id : "lastScrapeTime",
+				      "name" : "lastScrapeTime",
+				      "time" : currentTime },
+				 	 function(err, result, upserted) {
+					}
+				);
+			});
+
 	  		MongoClient.connect(globalConfig.mongoDb.url, function(err, db) {
 			 	assert.equal(null, err);
 			  	console.log("Connected correctly to server to write to DB");
@@ -105,9 +122,9 @@ module.exports = {
 				collection.insertMany(
 				    cardsJson, 
 				    function(err, result) {
+				    	assert.equal(err, undefined);
 				    	assert.equal(cardsJson.length, result.insertedCount);
 				    	db.close();
-				    	lastScrapeTime = new Date().getTime();
 						console.log("Scraping Ends");
 						if(passedCallback) {
 							passedCallback(passedReq, passedRes);
@@ -118,10 +135,39 @@ module.exports = {
 			});
 	  	});
 	},
-	getLastScrapeTime: function() {
-		return lastScrapeTime;
+	decideToScrapeOrSearch: function(scrape, searchDB, req, res) {
+		MongoClient.connect(globalConfig.mongoDb.url, function(err, db) {
+		 	assert.equal(null, err);
+		  	var collection = db.collection(globalConfig.mongoDb.name);
+			collection.find({ "name" : "lastScrapeTime" }).toArray(function(err, docs) {
+				if(docs.length == 0 || docs[0].time == undefined) {
+			  		dbHelper.clearDbWithCallback(scrape, searchDB, req, res);
+		  		} else {
+		  			currentTime = new Date().getTime();
+		  			lastScrapeTime = docs[0].time;
+					if(lastScrapeTime == undefined || ((currentTime - lastScrapeTime) > (1000 * 60 * 60 * 24))) {
+						console.log("Scraping then searching");
+						dbHelper.clearDbWithCallback(scrape, searchDB, req, res);
+					} else {
+						console.log("Searching");
+						searchDB(req, res);
+					}
+		  		}
+		  	});
+		});
 	},
 	resetLastScrapeTime: function() {
-		lastScrapeTime = "UnSet";
+		MongoClient.connect(globalConfig.mongoDb.url, function(err, db) {
+			assert.equal(null, err);
+			var lastScrapeTime = new object.lastScrapeTime();
+			lastScrapeTime.time = "Unset";
+
+			collection.insert(
+				lastScrapeTime, 
+				function(err, result) {
+				   	assert.equal(lastScrapeTime.length, result.insertedCount);
+				    db.close();
+				});
+		});
 	}
 };

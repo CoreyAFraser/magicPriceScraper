@@ -5,6 +5,7 @@ function setName(name) {
 		.replace("FOIL","").replace("- dvd", "").replace(/ +/g, " ").trim().toLowerCase();
 
 	this._id = newName;
+	this.cardName = newName;
 }
 
 function setSet(set) {
@@ -17,6 +18,7 @@ function setSet(set) {
 module.exports = {
 	card: function() {
 		this._id = "";
+		this.cardName = "";
 		this.prices = [];
 		this.setName = setName;
 

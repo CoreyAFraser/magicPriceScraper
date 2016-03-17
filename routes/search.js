@@ -36,9 +36,10 @@ errDomain.run(function(){
 		  	console.log("Connected correctly to server to search");
 
 		  	var collection = db.collection(globalConfig.mongoDb.name);
-			collection.find({ _id : req.query.cardName }).toArray(function(err, docs) {
+		  	searchCardName = req.query.cardName.toLowerCase();
+			collection.find({ _id : searchCardName }).toArray(function(err, docs) {
 				if(docs.length == 0) {
-			  		collection.find({ _id : new RegExp(req.query.cardName, "i") }).toArray(function(err, docs) {
+			  		collection.find({ cardName : new RegExp(searchCardName, "i") }).toArray(function(err, docs) {
 	    				if(!res.headersSent) { res.send(docs); };
 	  				});
 		  		} else {
@@ -49,16 +50,7 @@ errDomain.run(function(){
 	};
 
 	router.get('/search', function(req, res){
-		var currentTime = new Date().getTime();
-		var lastScrapeTime = scraper.getLastScrapeTime();
-		console.log("*** Last Scrape Time *** " + lastScrapeTime);
-		if(lastScrapeTime == "UnSet" || ((currentTime - lastScrapeTime) > (1000 * 60 * 60 * 24))) {
-			console.log("Scraping then searching");
-			scraper.scrape(searchDB, req, res);
-		} else {
-			console.log("Searching");
-			searchDB(req, res);
-		}
+		scraper.decideToScrapeOrSearch(scraper.scrape, searchDB, req, res);
 	});
 	
 	module.exports = router;
